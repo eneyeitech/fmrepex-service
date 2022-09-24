@@ -2,16 +2,27 @@ package com.example.fmrepexservice.business;
 
 
 import com.example.fmrepexservice.authentication.*;
+import com.example.fmrepexservice.query.UserQuery;
 import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
 import com.example.fmrepexservice.usermanagement.business.UserService;
 import com.example.fmrepexservice.usermanagement.business.UserType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 
 @Service
+@Component
 public class APIUserService {
+
+    private UserQuery query;
+    @Autowired
+    public APIUserService(UserQuery userQuery){
+        query = userQuery;
+    }
 
     public User addAdmin(String name, String email, String password, String phoneNumber){
         User admin = UserFactory.getUser(UserType.ADMINISTRATOR);
@@ -26,6 +37,10 @@ public class APIUserService {
         new GeneralLogger(registerManager);
         new EmailNotifier(registerManager);
         return registerManager.handle();
+    }
+
+    public List<User> getUsers(){
+        return query.getUsers();
     }
 
 

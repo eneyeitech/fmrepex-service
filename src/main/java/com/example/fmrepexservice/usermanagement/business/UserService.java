@@ -8,7 +8,9 @@ import com.example.fmrepexservice.usermanagement.business.user.Tenant;
 import com.example.fmrepexservice.usermanagement.exception.TableException;
 import com.example.fmrepexservice.usermanagement.persistence.DAO;
 import com.example.fmrepexservice.usermanagement.persistence.DAOFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
     private DAO userDao;
     private DAOFactory storeFactory;

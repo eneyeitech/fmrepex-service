@@ -18,6 +18,9 @@ public class StoreUserDAO extends DAO<User>{
 
     @Override
     public boolean add(User user) {
+        if(store.containsKey(user.getEmail())){
+            return update(user);
+        }
         User userInStore = store.put(user.getEmail(), user);
         if(userInStore == null){
             return true;
@@ -51,6 +54,8 @@ public class StoreUserDAO extends DAO<User>{
 
     @Override
     public boolean update(User user) {
+        System.out.println("Updating....");
+        store.remove(user.getEmail());
         User userInStore = store.put(user.getEmail(), user);
         if(userInStore == null){
             return true;

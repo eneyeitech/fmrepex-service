@@ -1,5 +1,10 @@
 package com.example.fmrepexservice.usermanagement.business;
 
+import com.example.fmrepexservice.security.Group;
+
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class User {
     private String email;
     private String phoneNumber;
@@ -79,5 +84,34 @@ public abstract class User {
                 ", approved=" + approved +
                 ", verified=" + verified +
                 '}';
+    }
+
+    /**
+     * Security section
+     */
+    private Set<Group> userGroups= new HashSet<>();
+    private Boolean locked = false;
+    public Set<Group> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(Set<Group> userGroups) {
+        this.userGroups = userGroups;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
+    }
+
+    public void addUserGroups(Group group) {
+        userGroups.add(group);
+    }
+
+    public void removeUserGroups(Group group) {
+        userGroups.remove(group);
     }
 }

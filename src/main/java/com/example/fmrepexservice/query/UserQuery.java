@@ -23,6 +23,9 @@ public class UserQuery {
         userService = service;
     }
 
+    public User getUser(String id){
+        return (User) userService.get(id);
+    }
     public List<User> getUsers(){
         return (List<User>) userService.getAll();
     }

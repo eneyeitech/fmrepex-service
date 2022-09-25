@@ -1,5 +1,6 @@
 package com.example.fmrepexservice.usermanagement.business;
 
+import com.example.fmrepexservice.security.Group;
 import com.example.fmrepexservice.usermanagement.business.user.*;
 
 public abstract class UserFactory {
@@ -32,6 +33,23 @@ public abstract class UserFactory {
                 return UserType.TECHNICIAN;
             case "admin":
                 return UserType.ADMINISTRATOR;
+            default:
+                return null;
+        }
+    }
+
+    public static Group getGroup(UserType type){
+        switch (type){
+            case ADMINISTRATOR:
+                return new Group("ROLE_ADMINISTRATOR", "Administrator Group");
+            case MANAGER:
+                return new Group("ROLE_MANAGER", "Manager Group");
+            case TECHNICIAN:
+                return new Group("ROLE_TECHNICIAN", "Technician Group");
+            case TENANT:
+                return new Group("ROLE_TENANT", "Tenant Group");
+            case DEPENDANT:
+                return new Group("ROLE_DEPENDANT", "Dependant Group");
             default:
                 return null;
         }

@@ -3,6 +3,7 @@ package com.example.fmrepexservice.business;
 
 import com.example.fmrepexservice.authentication.*;
 import com.example.fmrepexservice.query.UserQuery;
+import com.example.fmrepexservice.security.PasswordEncoderConfig;
 import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
 import com.example.fmrepexservice.usermanagement.business.UserService;
@@ -20,6 +21,8 @@ public class APIUserService {
 
     private UserQuery query;
     @Autowired
+    private PasswordEncoderConfig passwordEncoderConfig;
+    @Autowired
     public APIUserService(UserQuery userQuery){
         query = userQuery;
     }
@@ -27,10 +30,16 @@ public class APIUserService {
     public User addAdmin(String name, String email, String password, String phoneNumber){
         User admin = UserFactory.getUser(UserType.ADMINISTRATOR);
 
+        admin.addUserGroups(UserFactory.getGroup(UserType.ADMINISTRATOR));
+
         admin.setFullName(name.toUpperCase(Locale.ROOT));
         admin.setEmail(email);
         admin.setPhoneNumber(phoneNumber);
         admin.setPassword(password);
+
+        admin.setPassword(passwordEncoderConfig.getEncoder().encode(admin.getPassword()));
+        admin.setLocked(false);
+
 
         UserManagement registerManager = new Registration(admin, new UserService());
         new SecurityMonitor(registerManager);
@@ -39,6 +48,12 @@ public class APIUserService {
         return registerManager.handle();
     }
 
+    public User getUser(String email){
+        return query.getUser(email);
+    }
+    public boolean doesUserExist(String email){
+        return getUser(email) != null;
+    }
     public List<User> getUsers(){
         return query.getUsers();
     }

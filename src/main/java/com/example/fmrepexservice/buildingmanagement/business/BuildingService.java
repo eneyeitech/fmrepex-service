@@ -6,9 +6,11 @@ import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserType;
 import com.example.fmrepexservice.usermanagement.business.user.Manager;
 import com.example.fmrepexservice.usermanagement.business.user.Tenant;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class BuildingService implements ICrudService<Building>{
 
     private DAO buildingDAO;

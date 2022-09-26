@@ -7,9 +7,11 @@ import com.example.fmrepexservice.requestmanagement.business.ISubject;
 import com.example.fmrepexservice.requestmanagement.business.Request;
 import com.example.fmrepexservice.workordermanagement.persistence.DAO;
 import com.example.fmrepexservice.workordermanagement.persistence.DAOFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class WORequestService implements ICrudService<Request>, IObserver {
     private ISubject requestService;
     private DAO requestDAO;
@@ -53,8 +55,8 @@ public class WORequestService implements ICrudService<Request>, IObserver {
     }
 
     @Override
-    public List<Request> getAll(String tenantEmail) {
-        return requestDAO.getAll(tenantEmail);
+    public List<Request> getAll(String managerEmail) {
+        return requestDAO.getAll(managerEmail);
     }
 
     @Override

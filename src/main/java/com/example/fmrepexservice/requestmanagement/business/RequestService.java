@@ -3,10 +3,12 @@ package com.example.fmrepexservice.requestmanagement.business;
 import com.example.fmrepexservice.constant.Action;
 import com.example.fmrepexservice.requestmanagement.persistence.DAO;
 import com.example.fmrepexservice.requestmanagement.persistence.DAOFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class RequestService implements ICrudService<Request>, ISubject{
 
     private List<IObserver> observerList;

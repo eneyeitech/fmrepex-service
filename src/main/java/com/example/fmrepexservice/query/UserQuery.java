@@ -31,33 +31,33 @@ public class UserQuery {
     }
 
     public List<User> getTenants(){
-        List<User> users = (List<User>) userService.getAll();
+//        List<User> users = (List<User>) userService.getAll();
 
-        return users.stream().filter(u -> u.getUserType() == UserType.TENANT).collect(Collectors.toList());
+        return getUsers().stream().filter(u -> u.getUserType() == UserType.TENANT).collect(Collectors.toList());
     }
 
     public List<User> getManagers(){
-        List<User> users = (List<User>) userService.getAll();
+        //List<User> users = (List<User>) userService.getAll();
 
-        return users.stream().filter(u -> u.getUserType() == UserType.MANAGER).collect(Collectors.toList());
+        return getTenants().stream().filter(u -> u.getUserType() == UserType.MANAGER).collect(Collectors.toList());
     }
 
     public List<User> getTechnicians(){
-        List<User> users = (List<User>) userService.getAll();
+        //List<User> users = (List<User>) userService.getAll();
 
-        return users.stream().filter(u -> u.getUserType() == UserType.TECHNICIAN).collect(Collectors.toList());
+        return getUsers().stream().filter(u -> u.getUserType() == UserType.TECHNICIAN).collect(Collectors.toList());
     }
 
     public List<User> getDependants(){
-        List<User> users = (List<User>) userService.getAll();
+        //List<User> users = (List<User>) userService.getAll();
 
-        return users.stream().filter(u -> u.getUserType() == UserType.DEPENDANT).collect(Collectors.toList());
+        return getUsers().stream().filter(u -> u.getUserType() == UserType.DEPENDANT).collect(Collectors.toList());
     }
 
     public List<User> getAdmins(){
-        List<User> users = (List<User>) userService.getAll();
+        //List<User> users = (List<User>) userService.getAll();
 
-        return users.stream().filter(u -> u.getUserType() == UserType.ADMINISTRATOR).collect(Collectors.toList());
+        return getUsers().stream().filter(u -> u.getUserType() == UserType.ADMINISTRATOR).collect(Collectors.toList());
     }
 
     public List<User> getTenantsByManager(String managerEmail){

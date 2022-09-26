@@ -2,9 +2,11 @@ package com.example.fmrepexservice.workordermanagement.business;
 
 import com.example.fmrepexservice.workordermanagement.persistence.DAO;
 import com.example.fmrepexservice.workordermanagement.persistence.DAOFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class WorkOrderService implements ICrudService<WorkOrder>{
 
 

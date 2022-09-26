@@ -4,11 +4,14 @@ import com.example.fmrepexservice.business.APIAuthenticationService;
 import com.example.fmrepexservice.business.APIUserService;
 import com.example.fmrepexservice.business.SignIn;
 import com.example.fmrepexservice.business.SignUp;
+import com.example.fmrepexservice.helper.Validator;
+import com.example.fmrepexservice.security.UserDetailsImpl;
 import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -19,52 +22,62 @@ public class AuthenticationController {
     private APIAuthenticationService authenticationService;
     @Autowired
     private APIUserService userService;
-    private Map<String, Object> errorsMap;
+    private Map<String, Object> feedbackMap;
     private List userTypes;
 
     @Autowired
     public AuthenticationController(APIAuthenticationService apiAuthenticationService){
         authenticationService = apiAuthenticationService;
-        errorsMap = new HashMap<>();
+        feedbackMap = new HashMap<>();
         userTypes = new ArrayList<>(Arrays.asList("admin","tenant", "manager", "technician", "dependant"));
     }
 
 
     @PostMapping("api/auth/signup")
     public Object register(@RequestBody SignUp user, @RequestParam String type){
+
         if(user == null){
             return "Incorrect format";
         }
         if(userService.doesUserExist(user.getEmail())){
-            errorsMap.put("Error", "user already exist");
-            return new ResponseEntity<>(errorsMap, HttpStatus.CONFLICT);
+            feedbackMap.put("Error", "user already exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.CONFLICT);
         }
+
         String name = user.getName();
         String email = user.getEmail();
         String password = user.getPass();
         String phone = user.getPhone();
-        if(type == null || type.trim().isEmpty() || !userTypes.contains(type)){
-            errorsMap.put("Error", "user type not valid");
-            return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
-        }
-        if(name == null || name.trim().isEmpty() || name.length() < 1){
-            errorsMap.put("Error", "name empty (name should have at least 1 character)");
-            return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
-        }
-        if(password == null || password.trim().isEmpty() || password.length() < 8){
-            errorsMap.put("Error", "password empty (name should have at least 8 character)");
-            return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
-        }
-        if(email == null || email.trim().isEmpty() || email.length() < 3){
-            errorsMap.put("Error", "email empty (email should have at least 3 character)");
-            return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
-        }
-        if(phone == null || phone.trim().isEmpty() || phone.length() < 10){
-            errorsMap.put("Error", "phone empty (phone should have at least 10 character)");
-            return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+
+        if(!validateFields(name, email, password, phone, type)){
+            new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
         }
 
         return authenticationService.registerUser(name, email, password, phone, UserFactory.getType(type));
+    }
+
+    private boolean validateFields(String name, String email, String password, String phone, String type){
+        if(!Validator.validateType(type)){
+            feedbackMap.put("Error", "user type not valid");
+            return false;
+        }
+        if(!Validator.validateName(name)){
+            feedbackMap.put("Error", "name empty (name should have at least 1 character)");
+            return false;
+        }
+        if(!Validator.validatePassword(password)){
+            feedbackMap.put("Error", "password empty (name should have at least 8 character)");
+            return false;
+        }
+        if(!Validator.validateEmail(email)){
+            feedbackMap.put("Error", "email empty (email should have at least 3 character)");
+            return false;
+        }
+        if(!Validator.validatePhone(phone)){
+            feedbackMap.put("Error", "phone empty (phone should have at least 10 character)");
+            return false;
+        }
+        return true;
     }
 
     @PostMapping("api/auth/signin")
@@ -78,12 +91,12 @@ public class AuthenticationController {
 
 
         if(password == null || password.trim().isEmpty() || password.length() < 6){
-            errorsMap.put("Error", "password empty (name should have at least 6 character)");
-            return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+            feedbackMap.put("Error", "password empty (name should have at least 6 character)");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
         }
         if(email == null || email.trim().isEmpty() || email.length() < 3){
-            errorsMap.put("Error", "email empty (email should have at least 3 character)");
-            return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+            feedbackMap.put("Error", "email empty (email should have at least 3 character)");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
         }
 
 
@@ -94,56 +107,56 @@ public class AuthenticationController {
     public Object verify(@PathVariable String email){
         User userToVerify = userService.getUser(email);
         if(userToVerify == null){
-            errorsMap.put("Error", "user does not exist");
-            return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+            feedbackMap.put("Error", "user does not exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.NOT_FOUND);
         }
         if(!userToVerify.isVerified()){
             return authenticationService.verifyUser(email);
         }
-        errorsMap.put("Error", "user is already verified");
-        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+        feedbackMap.put("Error", "user is already verified");
+        return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("api/auth/{email}/lock")
     public Object lock(@PathVariable String email){
         User userToLock = userService.getUser(email);
         if(userToLock == null){
-            errorsMap.put("Error", "user does not exist");
-            return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+            feedbackMap.put("Error", "user does not exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.NOT_FOUND);
         }
         if(!userToLock.getLocked()){
             return authenticationService.lockUnlockUser(email);
         }
-        errorsMap.put("Error", "user is already locked");
-        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+        feedbackMap.put("Error", "user is already locked");
+        return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("api/auth/{email}/unlock")
     public Object unlock(@PathVariable String email){
         User userToUnLock = userService.getUser(email);
         if(userToUnLock == null){
-            errorsMap.put("Error", "user does not exist");
-            return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+            feedbackMap.put("Error", "user does not exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.NOT_FOUND);
         }
         if(userToUnLock.getLocked()){
             return authenticationService.lockUnlockUser(email);
         }
-        errorsMap.put("Error", "user is already unlocked");
-        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+        feedbackMap.put("Error", "user is already unlocked");
+        return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping ("api/auth/{email}/approve")
     public Object approve(@PathVariable String email){
         User userToLock = userService.getUser(email);
         if(userToLock == null){
-            errorsMap.put("Error", "user does not exist");
-            return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND);
+            feedbackMap.put("Error", "user does not exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.NOT_FOUND);
         }
         if(!userToLock.isApproved()){
             return authenticationService.approveUser(email);
         }
-        errorsMap.put("Error", "user is already approved");
-        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
+        feedbackMap.put("Error", "user is already approved");
+        return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
     }
 
 

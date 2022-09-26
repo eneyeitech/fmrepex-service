@@ -61,6 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable().headers().frameOptions().disable() // for Postman, the H2 console
                 .and()
                 .authorizeRequests() // manage access
+                .mvcMatchers(HttpMethod.POST, "/api/manager/**").hasAnyRole("MANAGER")
+                //.mvcMatchers(HttpMethod.POST, "/api/manager/new/technician").hasAnyRole("MANAGER")
                 .mvcMatchers(HttpMethod.GET, "/api/users").hasAnyRole("MANAGER")
                 .mvcMatchers("/**").permitAll()
 

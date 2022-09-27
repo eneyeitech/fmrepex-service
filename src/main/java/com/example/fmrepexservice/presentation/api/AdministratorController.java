@@ -46,8 +46,13 @@ public class AdministratorController {
     }
 
     @GetMapping("api/admin/log")
-    public Object getLogs(){
+    public Object logs(){
         LogStore logStore = LogStore.getInstance();
         return logStore.getLogs();
+    }
+
+    @GetMapping("api/admin/user")
+    public Object getUsers(){
+        return userService.getUsers();
     }
 }

@@ -1,4 +1,8 @@
 package com.example.fmrepexservice.presentation.api;
 
-public class TechnicianController {
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TechnicianController
+{
 }

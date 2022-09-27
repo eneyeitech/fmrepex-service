@@ -62,6 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // manage access
                 .mvcMatchers(HttpMethod.POST, "/api/manager/**").hasAnyRole("MANAGER")
+                .mvcMatchers("/api/admin/**").hasAnyRole("ADMINISTRATOR")
+                .mvcMatchers(HttpMethod.POST, "/api/tenant/**").hasAnyRole("TENANT")
                 //.mvcMatchers(HttpMethod.POST, "/api/manager/new/technician").hasAnyRole("MANAGER")
                 .mvcMatchers(HttpMethod.GET, "/api/users").hasAnyRole("MANAGER")
                 .mvcMatchers("/**").permitAll()

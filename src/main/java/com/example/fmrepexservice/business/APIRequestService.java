@@ -1,0 +1,27 @@
+package com.example.fmrepexservice.business;
+
+import com.example.fmrepexservice.query.RequestQuery;
+import com.example.fmrepexservice.requestmanagement.business.Request;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class APIRequestService {
+
+    @Autowired
+    private RequestQuery query;
+
+    public Request getRequest(String id){
+        return query.getRequest(id);
+    }
+
+    public boolean doesRequestExist(String id){
+        return getRequest(id) != null;
+    }
+
+    public List<Request> getRequests(){
+        return query.getRequests();
+    }
+}

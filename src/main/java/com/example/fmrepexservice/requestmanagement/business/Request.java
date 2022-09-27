@@ -37,7 +37,9 @@ public class Request {
     }
 
     public void setId(String id) {
-        this.id = id;
+        if(this.id == null){
+            this.id = id;
+        }
     }
 
     public String getDescription() {

@@ -1,7 +1,12 @@
 package com.example.fmrepexservice.business;
 
 import com.example.fmrepexservice.command.Command;
+import com.example.fmrepexservice.command.RequestCommand;
 import com.example.fmrepexservice.command.UserCommand;
+import com.example.fmrepexservice.helper.Helper;
+import com.example.fmrepexservice.requestmanagement.business.Request;
+import com.example.fmrepexservice.requestmanagement.business.RequestService;
+import com.example.fmrepexservice.requestmanagement.helper.RequestIdGenerator;
 import com.example.fmrepexservice.security.Group;
 import com.example.fmrepexservice.security.PasswordEncoderConfig;
 import com.example.fmrepexservice.security.UserDetailsImpl;
@@ -54,7 +59,17 @@ public class APITenantService {
         }
     }
 
+    public String addRequest(Request newRequest){
+        User user = Helper.retrieveUser();
 
+        newRequest.setId((new RequestIdGenerator(10)).generate());
+
+        Command command = new RequestCommand(user, newRequest,new RequestService());
+        new com.example.fmrepexservice.command.EmailNotifier(command);
+        command.actionRequester();
+
+        return newRequest.getId();
+    }
 
 
 }

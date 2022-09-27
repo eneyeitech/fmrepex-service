@@ -1,8 +1,15 @@
 package com.example.fmrepexservice.business;
 
 import com.example.fmrepexservice.authentication.*;
+import com.example.fmrepexservice.builder.BuildingBuilder;
+import com.example.fmrepexservice.buildingmanagement.business.Building;
+import com.example.fmrepexservice.buildingmanagement.business.BuildingService;
+import com.example.fmrepexservice.buildingmanagement.business.ManagedBuilding;
+import com.example.fmrepexservice.buildingmanagement.helper.BuildingIdGenerator;
+import com.example.fmrepexservice.command.BuildingCommand;
 import com.example.fmrepexservice.command.Command;
 import com.example.fmrepexservice.command.UserCommand;
+import com.example.fmrepexservice.helper.Helper;
 import com.example.fmrepexservice.security.Group;
 import com.example.fmrepexservice.security.PasswordEncoderConfig;
 import com.example.fmrepexservice.security.UserDetailsImpl;
@@ -10,6 +17,7 @@ import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
 import com.example.fmrepexservice.usermanagement.business.UserService;
 import com.example.fmrepexservice.usermanagement.business.UserType;
+import com.example.fmrepexservice.usermanagement.business.user.Tenant;
 import com.example.fmrepexservice.usermanagement.business.user.YetToLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -70,16 +78,34 @@ public class APIManagerService {
         newUser.setPassword(passwordEncoderConfig.getEncoder().encode(newUser.getPassword()));
         newUser.setLocked(true);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        /**Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User loggedInUser = null;
         if (auth != null) {
             loggedInUser = ((UserDetailsImpl) auth.getPrincipal()).getUser();
-        }
+        }*/
+
+        User loggedInUser = Helper.retrieveUser();
+
         if(loggedInUser != null) {
             Command command = new UserCommand(loggedInUser, newUser, new UserService());
             new com.example.fmrepexservice.command.EmailNotifier(command);
             command.actionRequester();
         }
+    }
+
+    public String addBuilding(ManagedBuilding newBuilding){
+        User loggedInUser = Helper.retrieveUser();
+
+        newBuilding.setId((new BuildingIdGenerator(10)).generate());
+        if(loggedInUser != null) {
+            newBuilding.setManagerEmail(loggedInUser.getEmail());
+
+            Command command = new BuildingCommand(loggedInUser, null, newBuilding, new BuildingService());
+            new com.example.fmrepexservice.command.EmailNotifier(command);
+            command.actionRequester();
+        }
+
+        return newBuilding.getId();
     }
 
     public User updateUser(User userToUpdate){
@@ -88,5 +114,12 @@ public class APIManagerService {
         new GeneralLogger(registerManager);
         new EmailNotifier(registerManager);
         return registerManager.handle();
+    }
+
+    public void assignTenent(User user, User tenant, Building building, String flatLabel){
+        ((Tenant)tenant).setFlatNoOrLabel(flatLabel);
+        Command command = new BuildingCommand(user, tenant,building, new BuildingService());
+        new com.example.fmrepexservice.command.EmailNotifier(command);
+        command.actionRequester();
     }
 }

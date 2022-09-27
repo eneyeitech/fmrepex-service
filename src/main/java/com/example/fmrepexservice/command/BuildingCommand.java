@@ -36,7 +36,12 @@ public class BuildingCommand extends Command{
                         ManagedBuilding managedBuilding = (ManagedBuilding) building;
                         if(tenantToAdd == null){
                             if(managedBuilding.getManagerEmail().equalsIgnoreCase(manager.getEmail())) {
-                                editBuilding();
+                                if(buildingService.get(building.getId()) == null){
+                                    createBuilding();
+                                } else {
+                                    editBuilding();
+                                }
+
                             }
                         }else{
                             Tenant tenant = (Tenant) tenantToAdd;

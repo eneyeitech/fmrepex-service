@@ -5,10 +5,14 @@ import com.example.fmrepexservice.buildingmanagement.business.BuildingService;
 import com.example.fmrepexservice.buildingmanagement.business.ManagedBuilding;
 import com.example.fmrepexservice.buildingmanagement.business.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
+@Component
 public class BuildingQuery {
 
 

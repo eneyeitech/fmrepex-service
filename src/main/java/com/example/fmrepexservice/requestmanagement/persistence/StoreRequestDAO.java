@@ -22,7 +22,7 @@ public class StoreRequestDAO extends DAO<Request>{
     @Override
     public boolean add(Request request) {
         if(request.hasId()){
-            return update(request);
+            //return update(request);
         }
 
         request.setId(requestIdGenerator.generate());

@@ -3,8 +3,8 @@ package com.example.fmrepexservice.requestmanagement.helper;
 import java.util.Random;
 
 public class RequestIdGenerator {
-    private int leftLimit = 48;
-    private int rightLimit = 122;
+    private int leftLimit = 65;
+    private int rightLimit = 90;
     private int targetStringLength;
     private Random random = new Random();
 

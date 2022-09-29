@@ -14,6 +14,7 @@ import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
 import com.example.fmrepexservice.usermanagement.business.UserService;
 import com.example.fmrepexservice.usermanagement.business.UserType;
+import com.example.fmrepexservice.workordermanagement.business.WORequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,8 +64,9 @@ public class APITenantService {
         User user = Helper.retrieveUser();
 
         newRequest.setId((new RequestIdGenerator(10)).generate());
-
-        Command command = new RequestCommand(user, newRequest,new RequestService());
+        RequestService requestService = new RequestService();
+        WORequestService woRequestService = new WORequestService(requestService);
+        Command command = new RequestCommand(user, newRequest,requestService);
         new com.example.fmrepexservice.command.EmailNotifier(command);
         command.actionRequester();
 

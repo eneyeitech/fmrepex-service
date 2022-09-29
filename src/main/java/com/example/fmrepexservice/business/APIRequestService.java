@@ -24,4 +24,12 @@ public class APIRequestService {
     public List<Request> getRequests(){
         return query.getRequests();
     }
+
+    public List<Request> getRequestsByTenant(String email){
+        return query.getRequestsByTenant2(email);
+    }
+
+    public List<Request> getRequestsByManager(String email){
+        return query.getRequestsByManager2(email);
+    }
 }

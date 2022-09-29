@@ -22,9 +22,29 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @GetMapping("api/manager/{email}")
-    public Object getUsersByManager(@PathVariable String email){
+    @GetMapping("api/manager/{email}/tenant")
+    public Object getTenantsByManager(@PathVariable String email){
         return userService.getTenantsByManager(email);
+    }
+
+    @GetMapping("api/tenant/{email}/dependant")
+    public Object getDependantsByTenant(@PathVariable String email){
+        return userService.getDependantsByTenant(email);
+    }
+
+    @GetMapping("api/tenant")
+    public Object getTenants(){
+        return userService.getTenants();
+    }
+
+    @GetMapping("api/dependant")
+    public Object getDependants(){
+        return userService.getDependants();
+    }
+
+    @GetMapping("api/user/{id}")
+    public Object getUser(@PathVariable String id){
+        return userService.getUser(id);
     }
 
     @GetMapping("api/manager")

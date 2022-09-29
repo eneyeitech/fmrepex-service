@@ -269,7 +269,7 @@ public class ManagerController {
         }
     }
 
-    @GetMapping("api/manager/{email}/building")
+    /**@GetMapping("api/manager/{email}/building")
     public Object getManagerBuildings(@PathVariable String email){
         resetFeedback();
         User manager = Helper.retrieveUser();
@@ -284,7 +284,7 @@ public class ManagerController {
     public Object getBuildings(){
         return buildingService.getBuildings();
     }
-
+*/
     public void resetFeedback(){
         feedbackMap = new HashMap<>();
     }

@@ -38,15 +38,12 @@ public class RequestController {
         return requestService.getRequestsByTenant(email);
     }
 
-    @GetMapping("api/manager/{email}/request")
-    public Object getManagerRequest(@PathVariable String email){
+    @GetMapping("api/manager/request")
+    public Object getManagerRequest(){
         resetFeedback();
         User manager = Helper.retrieveUser();
-        if(!manager.getEmail().equalsIgnoreCase(email)){
-            feedbackMap.put("error", "request not allowed");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
-        }
-        return requestService.getRequestsByManager(email);
+
+        return requestService.getRequestsByManager(manager.getEmail());
     }
 
     @GetMapping("api/request")

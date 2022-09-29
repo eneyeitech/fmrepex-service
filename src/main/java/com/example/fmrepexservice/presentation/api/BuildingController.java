@@ -33,15 +33,15 @@ public class BuildingController {
     }
 
 
-    @GetMapping("api/manager/{email}/building")
-    public Object getManagerBuildings(@PathVariable String email){
+    @GetMapping("api/manager/building")
+    public Object getManagerBuildings(){
         resetFeedback();
         User manager = Helper.retrieveUser();
-        if(!manager.getEmail().equalsIgnoreCase(email)){
+      /**  if(!manager.getEmail().equalsIgnoreCase(email)){
             feedbackMap.put("error", "request not allowed");
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
-        }
-        return buildingService.getBuildingsByManager(email);
+        }*/
+        return buildingService.getBuildingsByManager(manager.getEmail());
     }
 
     @GetMapping("api/building/{id}")

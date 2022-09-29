@@ -5,11 +5,14 @@ import com.example.fmrepexservice.buildingmanagement.business.*;
 import com.example.fmrepexservice.business.*;
 import com.example.fmrepexservice.helper.Helper;
 import com.example.fmrepexservice.helper.Validator;
+import com.example.fmrepexservice.requestmanagement.business.Request;
 import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
 import com.example.fmrepexservice.usermanagement.business.UserType;
 import com.example.fmrepexservice.usermanagement.business.user.Manager;
+import com.example.fmrepexservice.usermanagement.business.user.Technician;
 import com.example.fmrepexservice.usermanagement.business.user.Tenant;
+import com.example.fmrepexservice.workordermanagement.business.WorkOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,12 @@ public class ManagerController {
     private APIBuildingService buildingService;
     @Autowired
     private APIUserService userService;
+
+    @Autowired
+    private APIRequestService requestService;
+
+    @Autowired
+    private APIWorkOrderService workOrderService;
     private Map<String, Object> feedbackMap;
     private List userTypes;
 
@@ -212,7 +221,7 @@ public class ManagerController {
 
         if (((Tenant)editedTenant).hasAnAssignedBuilding()) {
             feedbackMap.put("error", "Tenant has been assigned successfully");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
         } else {
             feedbackMap.put("error", "Tenant has been assigned a building already");
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
@@ -262,9 +271,58 @@ public class ManagerController {
 
         if (!((Tenant)editedTenant).hasAnAssignedBuilding()) {
             feedbackMap.put("error", "Tenant un-assigned successfully");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
         } else {
             feedbackMap.put("error", "Tenant not un-assigned");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PostMapping("api/manager/work-order")
+    public Object createWorkOrder(@RequestBody NewWorkOrder workOrder) {
+        resetFeedback();
+        if (workOrder == null) {
+            feedbackMap.put("error", "incorrect format");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        if(!userService.doesUserExist(workOrder.getTechnicianEmail()) || !requestService.doesRequestExist(workOrder.getRequestId())){
+            feedbackMap.put("error", "technician or request does not exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        if(workOrderService.doesWorkOrderWithRequestExist(workOrder.getRequestId())){
+            feedbackMap.put("error", "work order with request does exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        Request request = requestService.getRequest(workOrder.getRequestId());
+        User user = userService.getUser(workOrder.getTechnicianEmail());
+        User manager = Helper.retrieveUser();
+
+        if(user.getUserType() != UserType.TECHNICIAN){
+            feedbackMap.put("error", "User must be a technician");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        if(!((Manager) manager).getEmail().equalsIgnoreCase(((Technician)user).getManagerEmail())){
+            feedbackMap.put("error", "Technician cannot be assigned to the work order");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
+        }
+
+        if(!((Manager) manager).getEmail().equalsIgnoreCase(request.getManagerEmail())){
+            feedbackMap.put("error", "Invalid request");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
+        }
+
+
+        String id = managerService.createWorkOrder(manager, user, new WorkOrder(), request);
+
+        if (workOrderService.doesWorkOrderExist(id)) {
+            feedbackMap.put("error", "Work order has been created successfully");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+        } else {
+            feedbackMap.put("error", "Work order not created");
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
         }
     }

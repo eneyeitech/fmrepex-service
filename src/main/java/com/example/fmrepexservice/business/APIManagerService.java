@@ -9,7 +9,9 @@ import com.example.fmrepexservice.buildingmanagement.helper.BuildingIdGenerator;
 import com.example.fmrepexservice.command.BuildingCommand;
 import com.example.fmrepexservice.command.Command;
 import com.example.fmrepexservice.command.UserCommand;
+import com.example.fmrepexservice.command.WorkOrderCommand;
 import com.example.fmrepexservice.helper.Helper;
+import com.example.fmrepexservice.requestmanagement.business.Request;
 import com.example.fmrepexservice.security.Group;
 import com.example.fmrepexservice.security.PasswordEncoderConfig;
 import com.example.fmrepexservice.security.UserDetailsImpl;
@@ -19,6 +21,9 @@ import com.example.fmrepexservice.usermanagement.business.UserService;
 import com.example.fmrepexservice.usermanagement.business.UserType;
 import com.example.fmrepexservice.usermanagement.business.user.Tenant;
 import com.example.fmrepexservice.usermanagement.business.user.YetToLogin;
+import com.example.fmrepexservice.workordermanagement.business.WorkOrder;
+import com.example.fmrepexservice.workordermanagement.business.WorkOrderService;
+import com.example.fmrepexservice.workordermanagement.helper.WorkOrderIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -121,5 +126,17 @@ public class APIManagerService {
         Command command = new BuildingCommand(user, tenant,building, new BuildingService());
         new com.example.fmrepexservice.command.EmailNotifier(command);
         command.actionRequester();
+    }
+
+    public String createWorkOrder(User user, User technician, WorkOrder workOrderToAssign, Request requestToAssign){
+
+        workOrderToAssign.setId((new WorkOrderIdGenerator(10)).generate());
+        workOrderToAssign.setRequest(requestToAssign);
+        workOrderToAssign.setTechnicianEmail(technician.getEmail());
+        Command command = new WorkOrderCommand(user, technician, workOrderToAssign, new WorkOrderService());
+        new com.example.fmrepexservice.command.EmailNotifier(command);
+        command.actionRequester();
+
+        return workOrderToAssign.getId();
     }
 }

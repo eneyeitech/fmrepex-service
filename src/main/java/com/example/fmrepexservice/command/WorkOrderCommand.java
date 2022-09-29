@@ -34,10 +34,8 @@ public class WorkOrderCommand extends Command{
         switch (loggedInUser.getUserType()) {
             case MANAGER:
                 Manager manager = (Manager) loggedInUser;
-                if (!workOrder.hasId() || !workOrder.hasTechnician()){
-                    if (request.hasATenant() && manager.getEmail().equalsIgnoreCase(request.getManagerEmail()) && request.getStatus() == Status.PENDING) {
-                        createAndAssignWorkOrder();
-                    }
+                if (request.hasATenant() && manager.getEmail().equalsIgnoreCase(request.getManagerEmail()) && request.getStatus() == Status.PENDING) {
+                    createAndAssignWorkOrder();
                 }else{
                     System.out.println("Invalid work order");
                 }

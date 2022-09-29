@@ -74,4 +74,10 @@ public class APITenantService {
     }
 
 
+    public void signOffRequest(User user, Request request){
+
+        Command command = new RequestCommand(user, request, new RequestService());
+        new com.example.fmrepexservice.command.EmailNotifier(command);
+        command.actionRequester();
+    }
 }

@@ -32,6 +32,16 @@ public class UserController {
         return userService.getDependantsByTenant(email);
     }
 
+    @GetMapping("api/tenant/building/{id}")
+    public Object getTenantsByBuilding(@PathVariable String id){
+        return userService.getTenantsByBuilding(id);
+    }
+
+    @GetMapping("api/dependant/building/{id}")
+    public Object getDependantsByBuilding(@PathVariable String id){
+        return userService.getDependantsByBuilding(id);
+    }
+
     @GetMapping("api/tenant")
     public Object getTenants(){
         return userService.getTenants();

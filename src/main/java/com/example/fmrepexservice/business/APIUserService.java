@@ -66,6 +66,14 @@ public class APIUserService {
         return query.getDependantsByTenant(email);
     }
 
+    public List<User> getTenantsByBuilding(String id){
+        return query.getTenantsByBuilding(id);
+    }
+
+    public List<User> getDependantsByBuilding(String id){
+        return query.getDependantsByBuilding(id);
+    }
+
     public List<User> getTenants(){
         return query.getTenants();
     }

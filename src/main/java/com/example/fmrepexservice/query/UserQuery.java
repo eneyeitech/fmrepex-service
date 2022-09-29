@@ -64,6 +64,15 @@ public class UserQuery {
         return getTenants().stream().filter(u -> ((Tenant)u).getManagerEmail().equalsIgnoreCase(managerEmail)).collect(Collectors.toList());
     }
 
+    public List<User> getTenantsByBuilding(String buildingId){
+
+        return getTenants().stream().filter(u -> (((Tenant)u).hasAnAssignedBuilding() && ((Tenant)u).getBuildingId().equalsIgnoreCase(buildingId))).collect(Collectors.toList());
+    }
+
+    public List<User> getDependantsByBuilding(String buildingId){
+        return getTenantsByBuilding(buildingId).stream().flatMap(u -> ((Tenant)u).getDependantsList().stream()).collect(Collectors.toList());
+    }
+
     public List<User> getDependantsByTenant(String tenantEmail){
         return getDependants().stream().filter(u -> ((Dependant)u).getTenantEmail().equalsIgnoreCase(tenantEmail)).collect(Collectors.toList());
     }

@@ -19,7 +19,7 @@ public class StoreWorkOrderDAO extends DAO<WorkOrder>{
     @Override
     public boolean add(WorkOrder workOrder) {
         if(workOrder.hasId()){
-            return update(workOrder);
+           // return update(workOrder);
         }
 
         workOrder.setId(workOrderIdGenerator.generate());

@@ -5,6 +5,8 @@ import com.example.fmrepexservice.business.APIRequestService;
 import com.example.fmrepexservice.business.APIUserService;
 import com.example.fmrepexservice.helper.Helper;
 import com.example.fmrepexservice.usermanagement.business.User;
+import com.example.fmrepexservice.usermanagement.business.UserType;
+import com.example.fmrepexservice.usermanagement.business.user.Tenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +23,34 @@ public class RequestController {
     private Map<String, Object> feedbackMap;
     @Autowired
     private APIRequestService requestService;
+    @Autowired
+    private  APIUserService userService;
 
     @Autowired
     public RequestController(){
         feedbackMap = new HashMap<>();
     }
 
-    @GetMapping("api/tenant/{email}/request")
-    public Object getTenantRequest(@PathVariable String email){
+    @GetMapping("api/tenant/request")
+    public Object getTenantRequest(){
         resetFeedback();
         User tenant = Helper.retrieveUser();
-        if(!tenant.getEmail().equalsIgnoreCase(email)){
+
+        return requestService.getRequestsByTenant(tenant.getEmail());
+    }
+
+    @GetMapping("api/manager/tenant/{email}/request")
+    public Object getManagerTenantRequest(@PathVariable String email){
+        resetFeedback();
+        User tenant = userService.getUser(email);
+        if(tenant == null || tenant.getUserType() != UserType.TENANT){
+            feedbackMap.put("error", "a tenant not provided");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
+        }
+
+        User manager = Helper.retrieveUser();
+
+        if(!manager.getEmail().equalsIgnoreCase(((Tenant)tenant).getManagerEmail())){
             feedbackMap.put("error", "request not allowed");
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
         }

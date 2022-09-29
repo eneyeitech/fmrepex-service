@@ -1,19 +1,19 @@
 package com.example.fmrepexservice.presentation.api;
 
 import com.example.fmrepexservice.business.*;
+import com.example.fmrepexservice.constant.Status;
 import com.example.fmrepexservice.helper.Helper;
 import com.example.fmrepexservice.helper.Validator;
 import com.example.fmrepexservice.requestmanagement.business.Category;
 import com.example.fmrepexservice.requestmanagement.business.Request;
 import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
+import com.example.fmrepexservice.usermanagement.business.user.Dependant;
 import com.example.fmrepexservice.usermanagement.business.user.Tenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -38,7 +38,7 @@ public class TenantController {
 
     @PostMapping("api/tenant/new/dependant")
     public Object addDependant(@RequestBody SignUp user){
-
+        resetFeedback();
         if(user == null){
             return "Incorrect format";
         }
@@ -122,6 +122,47 @@ public class TenantController {
             return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
         }else{
             feedbackMap.put("message", "Error occurred adding request");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("api/tenant/request/{id}/sign-off")
+    public Object signOff(@PathVariable String id){
+        resetFeedback();
+        if(!requestService.doesRequestExist(id)){
+            feedbackMap.put("Error", "Invalid request");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        Request request = requestService.getRequest(id);
+
+        if(request.getStatus() != Status.COMPLETED){
+            feedbackMap.put("Error", "Only completed request can be signed off");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        if(request.isSignedOff()){
+            feedbackMap.put("Error", "Request already signed off");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+
+        User user = Helper.retrieveUser();
+
+        if(user.getEmail() != request.getTenantEmail()){
+            feedbackMap.put("Error", "Tenant not in scope with request");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        tenantService.signOffRequest(user, request);
+
+        Request editedRequest = requestService.getRequest(id);
+
+        if(editedRequest.isSignedOff()){
+            feedbackMap.put("message", "Request signed off");
+            return new ResponseEntity<>(editedRequest, HttpStatus.OK);
+        } else{
+            feedbackMap.put("error", "Request not signed off");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
         }
     }

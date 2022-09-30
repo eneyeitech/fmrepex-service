@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,15 @@ public class UserQuery {
     }
     public List<User> getUsers(){
         return (List<User>) userService.getAll();
+    }
+
+    public List<User> getUsersByManager(String email){
+        List<User> tenants = getUsers().stream().filter(u -> u.getUserType() == UserType.TENANT && ((Tenant)u).getManagerEmail() != null && ((Tenant)u).getManagerEmail().equalsIgnoreCase(email)).collect(Collectors.toList());
+        List<User> technicians = getUsers().stream().filter(u -> u.getUserType() == UserType.TECHNICIAN && ((Technician)u).getManagerEmail() != null &&  ((Technician)u).getManagerEmail().equalsIgnoreCase(email)).collect(Collectors.toList());
+        List<User> all = new ArrayList<>();
+        all.addAll(technicians);
+        all.addAll(tenants);
+        return all;
     }
 
     public List<User> getTenants(){

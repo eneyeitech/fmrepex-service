@@ -88,10 +88,10 @@ public class AuthenticationController {
 
         String email = user.getEmail();
         String password = user.getPass();
+System.out.println(password);
 
-
-        if(password == null || password.trim().isEmpty() || password.length() < 6){
-            feedbackMap.put("Error", "password empty (name should have at least 6 character)");
+        if(password == null || password.trim().isEmpty() || password.length() < 4){
+            feedbackMap.put("Error", "password empty (password should have at least 4 character)");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
         }
         if(email == null || email.trim().isEmpty() || email.length() < 3){
@@ -99,8 +99,16 @@ public class AuthenticationController {
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
         }
 
-
-        return authenticationService.loginUser(email, password);
+        User signedInUser = authenticationService.loginUser(email, password);
+        feedbackMap = new HashMap<>();
+        if (signedInUser != null){
+            feedbackMap.put("user", signedInUser);
+            feedbackMap.put("status", "User login successful.");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+        }else{
+            feedbackMap.put("error", "invalid credentials");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("api/auth/{email}/verify")

@@ -1,6 +1,8 @@
 package com.example.fmrepexservice.presentation.api;
 
 import com.example.fmrepexservice.business.APIUserService;
+import com.example.fmrepexservice.helper.Helper;
+import com.example.fmrepexservice.usermanagement.business.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,12 @@ public class UserController {
     @GetMapping("api/users")
     public Object getUsers(){
         return userService.getUsers();
+    }
+
+    @GetMapping("api/manager/users")
+    public Object getUsersByManager(){
+        User user = Helper.retrieveUser();
+        return userService.getUsersByManager(user.getEmail());
     }
 
     @GetMapping("api/manager/{email}/tenant")

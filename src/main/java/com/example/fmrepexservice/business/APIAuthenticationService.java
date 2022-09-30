@@ -39,6 +39,7 @@ public class APIAuthenticationService {
         new EmailNotifier(loginManager);
 
         return loginManager.handle();
+
     }
 
     public User registerUser(String name, String email, String password, String phoneNumber, UserType type){

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -63,6 +64,18 @@ public class RequestController {
         User manager = Helper.retrieveUser();
 
         return requestService.getRequestsByManager(manager.getEmail());
+    }
+
+    @GetMapping("api/building/{bid}/request")
+    public Object getBuildingRequest(@PathVariable String bid){
+        resetFeedback();
+
+        return requestService.getRequestsByBuilding(bid);
+    }
+
+    @GetMapping("api/slug/request")
+    public Object editBuilding(@RequestParam String slug){
+        return requestService.getRequest(slug);
     }
 
     @GetMapping("api/request")

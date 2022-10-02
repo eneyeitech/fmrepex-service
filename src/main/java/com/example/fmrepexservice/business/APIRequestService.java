@@ -32,4 +32,8 @@ public class APIRequestService {
     public List<Request> getRequestsByManager(String email){
         return query.getRequestsByManager2(email);
     }
+
+    public List<Request> getRequestsByBuilding(String id){
+        return query.getRequestsByBuildingId(id);
+    }
 }

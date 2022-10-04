@@ -6,6 +6,7 @@ import com.example.fmrepexservice.business.APIUserService;
 import com.example.fmrepexservice.helper.Helper;
 import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserType;
+import com.example.fmrepexservice.usermanagement.business.user.Dependant;
 import com.example.fmrepexservice.usermanagement.business.user.Tenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,14 @@ public class RequestController {
         User tenant = Helper.retrieveUser();
 
         return requestService.getRequestsByTenant(tenant.getEmail());
+    }
+
+    @GetMapping("api/dependant/request")
+    public Object getDependantTenantRequest(){
+        resetFeedback();
+        User dependant = Helper.retrieveUser();
+
+        return requestService.getRequestsByTenant(((Dependant)dependant).getTenantEmail());
     }
 
     @GetMapping("api/manager/tenant/{email}/request")

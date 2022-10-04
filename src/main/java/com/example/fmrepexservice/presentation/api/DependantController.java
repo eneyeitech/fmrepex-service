@@ -39,6 +39,7 @@ public class DependantController {
 
     @PutMapping("api/dependant/request/{id}/sign-off")
     public Object signOff(@PathVariable String id){
+        resetFeedback();
         if(!requestService.doesRequestExist(id)){
             feedbackMap.put("Error", "Invalid request");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);

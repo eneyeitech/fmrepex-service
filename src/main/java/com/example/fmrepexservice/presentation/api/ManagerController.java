@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -315,8 +316,10 @@ public class ManagerController {
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
         }
 
-
-        String id = managerService.createWorkOrder(manager, user, new WorkOrder(), request);
+        WorkOrder createdWorkOrder = new WorkOrder();
+        createdWorkOrder.setDescription(workOrder.getDescription());
+        createdWorkOrder.setCreatedDateTime(LocalDateTime.now());
+        String id = managerService.createWorkOrder(manager, user, createdWorkOrder, request);
 
         if (workOrderService.doesWorkOrderExist(id)) {
             feedbackMap.put("error", "Work order has been created successfully");

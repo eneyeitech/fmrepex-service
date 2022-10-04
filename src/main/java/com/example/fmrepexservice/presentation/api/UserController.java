@@ -31,6 +31,18 @@ public class UserController {
         return userService.getUsersByManager(user.getEmail());
     }
 
+    @GetMapping("api/tenant/dependants")
+    public Object getDependantsByTenantQ(){
+        User user = Helper.retrieveUser();
+        return userService.getDependantsByTenant(user.getEmail());
+    }
+
+    @GetMapping("api/admin/users")
+    public Object getAllUsers(){
+        User user = Helper.retrieveUser();
+        return userService.getUsers().stream().filter(u->!u.getEmail().equalsIgnoreCase(user.getEmail()));
+    }
+
     @GetMapping("api/manager/{email}/tenant")
     public Object getTenantsByManager(@PathVariable String email){
         return userService.getTenantsByManager(email);

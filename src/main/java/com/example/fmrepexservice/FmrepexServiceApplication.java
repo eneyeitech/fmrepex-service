@@ -28,7 +28,7 @@ public class FmrepexServiceApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://localhost:3000", "https://eneyeitech.github.io/")
                         .allowedMethods("*");
 
             }

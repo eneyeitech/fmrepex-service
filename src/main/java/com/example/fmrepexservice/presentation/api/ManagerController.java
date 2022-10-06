@@ -92,8 +92,8 @@ public class ManagerController {
         managerService.registerTenant(name, email, password, phone, UserFactory.getType("tenant"));
 
         if(userService.doesUserExist(user.getEmail())){
-            feedbackMap.put("message", "Tenant successfully added");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("message", "Tenant successfully added");
+            return new ResponseEntity<>(userService.getUser(user.getEmail()), HttpStatus.OK);
         }else {
             feedbackMap.put("message", "Error occurred adding tenant");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
@@ -123,8 +123,8 @@ public class ManagerController {
         managerService.registerTechnician(name, email, password, phone, UserFactory.getType("technician"));
 
         if(userService.doesUserExist(user.getEmail())){
-            feedbackMap.put("message", "Technician successfully added");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("message", "Technician successfully added");
+            return new ResponseEntity<>(userService.getUser(user.getEmail()), HttpStatus.OK);
         }else {
             feedbackMap.put("message", "Error occurred adding technician");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);

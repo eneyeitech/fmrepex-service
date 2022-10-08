@@ -20,11 +20,13 @@ import java.util.Locale;
 public class APIUserService {
 
     private UserQuery query;
+    private UserService userService;
     @Autowired
     private PasswordEncoderConfig passwordEncoderConfig;
     @Autowired
-    public APIUserService(UserQuery userQuery){
+    public APIUserService(UserQuery userQuery, UserService userService){
         query = userQuery;
+        this.userService = userService;
     }
 
     public User addAdmin(String name, String email, String password, String phoneNumber){
@@ -90,4 +92,7 @@ public class APIUserService {
         return query.getManagers();
     }
 
+    public void deleteUser(String email){
+        userService.remove(email);
+    }
 }

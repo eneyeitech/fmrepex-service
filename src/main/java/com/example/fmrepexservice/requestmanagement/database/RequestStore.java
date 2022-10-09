@@ -1,7 +1,5 @@
 package com.example.fmrepexservice.requestmanagement.database;
 
-
-
 import com.example.fmrepexservice.requestmanagement.business.Request;
 
 import java.util.List;

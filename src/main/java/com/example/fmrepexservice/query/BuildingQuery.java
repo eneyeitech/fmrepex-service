@@ -3,7 +3,7 @@ package com.example.fmrepexservice.query;
 import com.example.fmrepexservice.buildingmanagement.business.Building;
 import com.example.fmrepexservice.buildingmanagement.business.BuildingService;
 import com.example.fmrepexservice.buildingmanagement.business.ManagedBuilding;
-import com.example.fmrepexservice.buildingmanagement.business.State;
+import com.example.fmrepexservice.constant.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;

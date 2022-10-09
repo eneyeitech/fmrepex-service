@@ -1,18 +1,20 @@
 package com.example.fmrepexservice.business;
 
+import com.example.fmrepexservice.announcementmanagement.business.Announcement;
+import com.example.fmrepexservice.announcementmanagement.business.AnnouncementService;
+import com.example.fmrepexservice.announcementmanagement.helper.AnnouncementIdGenerator;
 import com.example.fmrepexservice.authentication.*;
-import com.example.fmrepexservice.builder.BuildingBuilder;
+import com.example.fmrepexservice.authentication.EmailNotifier;
 import com.example.fmrepexservice.buildingmanagement.business.Building;
 import com.example.fmrepexservice.buildingmanagement.business.BuildingService;
 import com.example.fmrepexservice.buildingmanagement.business.ManagedBuilding;
 import com.example.fmrepexservice.buildingmanagement.helper.BuildingIdGenerator;
-import com.example.fmrepexservice.command.BuildingCommand;
-import com.example.fmrepexservice.command.Command;
-import com.example.fmrepexservice.command.UserCommand;
-import com.example.fmrepexservice.command.WorkOrderCommand;
+import com.example.fmrepexservice.command.*;
+import com.example.fmrepexservice.companymanagement.business.Company;
+import com.example.fmrepexservice.companymanagement.business.CompanyService;
+import com.example.fmrepexservice.companymanagement.helper.CompanyIdGenerator;
 import com.example.fmrepexservice.helper.Helper;
 import com.example.fmrepexservice.requestmanagement.business.Request;
-import com.example.fmrepexservice.security.Group;
 import com.example.fmrepexservice.security.PasswordEncoderConfig;
 import com.example.fmrepexservice.security.UserDetailsImpl;
 import com.example.fmrepexservice.usermanagement.business.User;
@@ -20,7 +22,6 @@ import com.example.fmrepexservice.usermanagement.business.UserFactory;
 import com.example.fmrepexservice.usermanagement.business.UserService;
 import com.example.fmrepexservice.usermanagement.business.UserType;
 import com.example.fmrepexservice.usermanagement.business.user.Tenant;
-import com.example.fmrepexservice.usermanagement.business.user.YetToLogin;
 import com.example.fmrepexservice.workordermanagement.business.WorkOrder;
 import com.example.fmrepexservice.workordermanagement.business.WorkOrderService;
 import com.example.fmrepexservice.workordermanagement.helper.WorkOrderIdGenerator;
@@ -29,8 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -138,5 +137,33 @@ public class APIManagerService {
         command.actionRequester();
 
         return workOrderToAssign.getId();
+    }
+
+    public String addAnnouncement(Announcement newAnnouncement){
+        User loggedInUser = Helper.retrieveUser();
+
+        newAnnouncement.setId((new AnnouncementIdGenerator(10)).generate());
+        if(loggedInUser != null) {
+
+            Command command = new AnnouncementCommand(loggedInUser, newAnnouncement, new AnnouncementService());
+            new com.example.fmrepexservice.command.EmailNotifier(command);
+            command.actionRequester();
+
+        }
+
+        return newAnnouncement.getId();
+    }
+
+    public String addCompany(Company newCompany){
+        User loggedInUser = Helper.retrieveUser();
+
+        newCompany.setId((new CompanyIdGenerator(10)).generate());
+        if(loggedInUser != null) {
+            Command command = new CompanyCommand(loggedInUser, newCompany, new CompanyService(), new UserService());
+            new com.example.fmrepexservice.command.EmailNotifier(command);
+            command.actionRequester();
+        }
+
+        return newCompany.getId();
     }
 }

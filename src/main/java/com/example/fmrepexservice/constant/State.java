@@ -1,4 +1,4 @@
-package com.example.fmrepexservice.buildingmanagement.business;
+package com.example.fmrepexservice.constant;
 
 public enum State {
     ABIA,

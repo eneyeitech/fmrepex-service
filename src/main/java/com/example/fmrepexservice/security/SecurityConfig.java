@@ -68,6 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/api/dependant/**").hasAnyRole("DEPENDANT")
                 //.mvcMatchers(HttpMethod.POST, "/api/manager/new/technician").hasAnyRole("MANAGER")
                 .mvcMatchers(HttpMethod.GET, "/api/manager/users").hasAnyRole("MANAGER")
+                .mvcMatchers(HttpMethod.GET, "/api/manager/announcement").hasAnyRole("MANAGER")
+                .mvcMatchers(HttpMethod.GET, "/api/tenant/announcement").hasAnyRole("TENANT")
                 .mvcMatchers("/**").permitAll()
 
                 /**.mvcMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()

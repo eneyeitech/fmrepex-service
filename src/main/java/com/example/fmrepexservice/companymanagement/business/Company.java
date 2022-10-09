@@ -1,14 +1,31 @@
-package com.example.fmrepexservice.buildingmanagement.business;
+package com.example.fmrepexservice.companymanagement.business;
 
+import com.example.fmrepexservice.companymanagement.helper.CompanyIdGenerator;
 import com.example.fmrepexservice.constant.Address;
 import com.example.fmrepexservice.constant.State;
 
-public abstract class Building {
-    protected String id;
-    protected String name;
-    protected int noOfFlats = 0;
-    protected Address address;
-    protected Coordinate coordinate;
+public class Company {
+    private String id;
+    private String name;
+    private Address address;
+
+    public Company(){
+
+    }
+
+    public Company(CompanyIdGenerator companyIdGenerator){
+        id= companyIdGenerator.generate();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        if(this.id == null){
+            this.id = id;
+        }
+    }
 
     public String getName() {
         return name;
@@ -26,24 +43,10 @@ public abstract class Building {
         this.address = address;
     }
 
-    public Coordinate getCoordinate() {
-        return coordinate;
+    public boolean hasId(){
+        return id != null;
     }
 
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        if(this.id == null){
-            this.id = id;
-        }
-
-    }
 
     public String getHouseNo() {
         return address.getHouseNo();
@@ -57,8 +60,6 @@ public abstract class Building {
     public String getTownName() {
         return address.getTownName();
     }
-
-
 
     public State getState() {
         return address.getState();
@@ -82,32 +83,5 @@ public abstract class Building {
     public void setState(State state) {
         setAddress(new Address(address.getHouseNo(), address.getStreetName(), address.getTownName(), state));
     }
-    public String getLongitude() {
-        return coordinate.getLongitude();
-    }
 
-
-
-    public String getLatitude() {
-        return coordinate.getLatitude();
-    }
-
-    public void setLatitude(String latitude) {
-        setCoordinate(new Coordinate(coordinate.getLongitude(), latitude));
-    }
-    public void setLongitude(String longitude) {
-        setCoordinate(new Coordinate(longitude, coordinate.getLatitude()));
-    }
-
-    public int getNoOfFlats() {
-        return noOfFlats;
-    }
-
-    public void setNoOfFlats(int noOfFlats) {
-        this.noOfFlats = noOfFlats;
-    }
-
-    public boolean hasId(){
-        return getId() != null;
-    }
 }

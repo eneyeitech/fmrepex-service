@@ -1,7 +1,7 @@
 package com.example.fmrepexservice.builder;
 
-import com.example.fmrepexservice.buildingmanagement.business.Address;
-import com.example.fmrepexservice.buildingmanagement.business.State;
+import com.example.fmrepexservice.constant.Address;
+import com.example.fmrepexservice.constant.State;
 
 import java.util.Random;
 import java.util.Scanner;

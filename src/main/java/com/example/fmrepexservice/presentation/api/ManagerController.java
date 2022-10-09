@@ -1,10 +1,15 @@
 package com.example.fmrepexservice.presentation.api;
 
 
+import com.example.fmrepexservice.announcementmanagement.business.Announcement;
 import com.example.fmrepexservice.buildingmanagement.business.*;
 import com.example.fmrepexservice.business.*;
+import com.example.fmrepexservice.companymanagement.business.Company;
+import com.example.fmrepexservice.constant.Address;
+import com.example.fmrepexservice.constant.State;
 import com.example.fmrepexservice.helper.Helper;
 import com.example.fmrepexservice.helper.Validator;
+import com.example.fmrepexservice.requestmanagement.business.Category;
 import com.example.fmrepexservice.requestmanagement.business.Request;
 import com.example.fmrepexservice.usermanagement.business.User;
 import com.example.fmrepexservice.usermanagement.business.UserFactory;
@@ -34,6 +39,12 @@ public class ManagerController {
 
     @Autowired
     private APIWorkOrderService workOrderService;
+
+    @Autowired
+    private APICompanyService companyService;
+
+    @Autowired
+    private APIAnnouncementService announcementService;
     private Map<String, Object> feedbackMap;
     private List userTypes;
 
@@ -346,6 +357,94 @@ public class ManagerController {
         return buildingService.getBuildings();
     }
 */
+
+    @PostMapping("api/manager/new/company")
+    public Object addCompany(@RequestBody NewCompany company){
+        resetFeedback();
+        if(company == null){
+            feedbackMap.put("error","incorrect format");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        Company newCompany = new Company();
+        Address address = new Address(company.getHouseNo(), company.getStreetName(), company.getTownName(), State.valueOf(company.getState()));
+
+        newCompany.setName(company.getName());
+        newCompany.setAddress(address);
+
+        String id = managerService.addCompany(newCompany);
+        if(id != null && companyService.doesCompanyExist(id)){
+            feedbackMap.put("message", "Company successfully added");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+        }else {
+            feedbackMap.put("message", "Error occurred adding company");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("api/manager/new/announcement")
+    public Object newAnnouncement(@RequestBody NewAnnouncement announcement){
+        resetFeedback();
+        if(announcement == null){
+            feedbackMap.put("error","incorrect format");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        Manager user = (Manager) Helper.retrieveUser();
+
+        Announcement newAnnouncement = new Announcement();
+
+        newAnnouncement.setMessage(announcement.getMessage());
+        newAnnouncement.setManagerEmail(user.getEmail());
+        newAnnouncement.setCreatedDateTime(LocalDateTime.now());
+
+        String id = managerService.addAnnouncement(newAnnouncement);
+
+        if(announcementService.doesAnnouncementExist(id)){
+            //feedbackMap.put("message", "Announcement successfully added");
+            return new ResponseEntity<>(announcementService.getAnnouncement(id), HttpStatus.OK);
+        }else{
+            feedbackMap.put("message", "Error occurred adding announcement");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("api/manager/announcement/{aid}")
+    public Object editAnnouncement(@RequestBody NewAnnouncement announcement, @PathVariable String aid){
+        resetFeedback();
+        if(announcement == null){
+            feedbackMap.put("error","incorrect format");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+
+        if(!announcementService.doesAnnouncementExist(aid)){
+            feedbackMap.put("message", "Announcement does not exist");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.NOT_FOUND);
+        }
+
+        Manager user = (Manager) Helper.retrieveUser();
+
+        Announcement editedAnnouncement = announcementService.getAnnouncement(aid);
+
+        if(!editedAnnouncement.getManagerEmail().equalsIgnoreCase(user.getEmail())){
+            feedbackMap.put("message", "Announcement can not be updated");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
+        }
+
+        editedAnnouncement.setMessage(announcement.getMessage());
+        editedAnnouncement.setCreatedDateTime(LocalDateTime.now());
+
+        String id = managerService.addAnnouncement(editedAnnouncement);
+
+        if(announcementService.doesAnnouncementExist(id)){
+            //feedbackMap.put("message", "Announcement successfully updated");
+            return new ResponseEntity<>(announcementService.getAnnouncement(id), HttpStatus.OK);
+        }else{
+            feedbackMap.put("message", "Error occurred updating announcement");
+            return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public void resetFeedback(){
         feedbackMap = new HashMap<>();
     }

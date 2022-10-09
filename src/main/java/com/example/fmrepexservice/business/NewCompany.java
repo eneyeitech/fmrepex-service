@@ -1,18 +1,13 @@
 package com.example.fmrepexservice.business;
 
-public class NewBuilding {
-
-
+public class NewCompany {
     private String name;
-    private int noOfFlats = 0;
     private String houseNo;
     private String streetName;
     private String townName;
     private String state;
-    private String longitude;
-    private String latitude;
 
-    public NewBuilding(){
+    public NewCompany(){
 
     }
 
@@ -22,14 +17,6 @@ public class NewBuilding {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getNoOfFlats() {
-        return noOfFlats;
-    }
-
-    public void setNoOfFlats(int noOfFlats) {
-        this.noOfFlats = noOfFlats;
     }
 
     public String getHouseNo() {
@@ -64,19 +51,5 @@ public class NewBuilding {
         this.state = state;
     }
 
-    public String getLongitude() {
-        return longitude;
-    }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
 }

@@ -1,4 +1,6 @@
-package com.example.fmrepexservice.buildingmanagement.business;
+package com.example.fmrepexservice.constant;
+
+import com.example.fmrepexservice.constant.State;
 
 public class Address {
     private String houseNo;

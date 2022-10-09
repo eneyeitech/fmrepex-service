@@ -9,6 +9,7 @@ import java.util.List;
 public class Manager extends User {
     private List<Tenant> tenantsList;
     private List<Technician> techniciansList;
+    private String companyId = null;
 
     {
         tenantsList = new ArrayList<>();
@@ -72,6 +73,18 @@ public class Manager extends User {
 
     public void setTechniciansList(List<Technician> techniciansList) {
         this.techniciansList = new ArrayList<>(techniciansList);
+    }
+
+    public boolean hasCompany(){
+        return companyId != null;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 
     public boolean hasTenants(){

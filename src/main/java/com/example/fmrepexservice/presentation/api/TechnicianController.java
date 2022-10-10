@@ -61,8 +61,8 @@ public class TechnicianController {
         WorkOrder editedWorkOrder = workOrderService.getWorkOrder(id);
 
         if(editedWorkOrder.getStatus() == Status.ACTIVE){
-            feedbackMap.put("message", "Work order accepted");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("message", "Work order accepted");
+            return new ResponseEntity<>(editedWorkOrder, HttpStatus.OK);
         } else{
             feedbackMap.put("error", "Work order not accepted");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
@@ -97,8 +97,8 @@ public class TechnicianController {
         WorkOrder editedWorkOrder = workOrderService.getWorkOrder(id);
 
         if(editedWorkOrder.getStatus() == Status.COMPLETED){
-            feedbackMap.put("message", "Work order completed");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("message", "Work order completed");
+            return new ResponseEntity<>(editedWorkOrder, HttpStatus.OK);
         } else{
             feedbackMap.put("error", "Work order not accepted");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);

@@ -182,8 +182,9 @@ public class ManagerController {
 
         String id = managerService.addBuilding(newBuilding);
         if(id != null && buildingService.doesBuildingExist(id)){
-            feedbackMap.put("message", "Building successfully added");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("message", "Building successfully added");
+            //return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            return new ResponseEntity<>(buildingService.getBuilding(id), HttpStatus.OK);
         }else {
             feedbackMap.put("message", "Error occurred adding building");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
@@ -232,8 +233,8 @@ public class ManagerController {
         User editedTenant = userService.getUser(email);
 
         if (((Tenant)editedTenant).hasAnAssignedBuilding()) {
-            feedbackMap.put("error", "Tenant has been assigned successfully");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("error", "Tenant has been assigned successfully");
+            return new ResponseEntity<>(editedTenant, HttpStatus.OK);
         } else {
             feedbackMap.put("error", "Tenant has been assigned a building already");
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
@@ -282,8 +283,8 @@ public class ManagerController {
         User editedTenant = userService.getUser(email);
 
         if (!((Tenant)editedTenant).hasAnAssignedBuilding()) {
-            feedbackMap.put("error", "Tenant un-assigned successfully");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("error", "Tenant un-assigned successfully");
+            return new ResponseEntity<>(editedTenant, HttpStatus.OK);
         } else {
             feedbackMap.put("error", "Tenant not un-assigned");
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
@@ -333,8 +334,8 @@ public class ManagerController {
         String id = managerService.createWorkOrder(manager, user, createdWorkOrder, request);
 
         if (workOrderService.doesWorkOrderExist(id)) {
-            feedbackMap.put("error", "Work order has been created successfully");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("error", "Work order has been created successfully");
+            return new ResponseEntity<>(workOrderService.getWorkOrder(id), HttpStatus.OK);
         } else {
             feedbackMap.put("error", "Work order not created");
             return new ResponseEntity<>(feedbackMap, HttpStatus.FORBIDDEN);
@@ -374,8 +375,8 @@ public class ManagerController {
 
         String id = managerService.addCompany(newCompany);
         if(id != null && companyService.doesCompanyExist(id)){
-            feedbackMap.put("message", "Company successfully added");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("message", "Company successfully added");
+            return new ResponseEntity<>(companyService.getCompany(id), HttpStatus.OK);
         }else {
             feedbackMap.put("message", "Error occurred adding company");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);

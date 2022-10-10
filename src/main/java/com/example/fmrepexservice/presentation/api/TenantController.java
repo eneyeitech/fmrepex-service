@@ -59,8 +59,8 @@ public class TenantController {
         tenantService.registerDependant(name, email, password, phone, UserFactory.getType("dependant"));
 
         if(userService.doesUserExist(user.getEmail())){
-            feedbackMap.put("message", "Dependant successfully added");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            //feedbackMap.put("message", "Dependant successfully added");
+            return new ResponseEntity<>(userService.getUser(user.getEmail()), HttpStatus.OK);
         }else {
             feedbackMap.put("message", "Error occurred adding dependant");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);
@@ -119,7 +119,7 @@ public class TenantController {
 
         if(requestService.doesRequestExist(id)){
             feedbackMap.put("message", "Request successfully added");
-            return new ResponseEntity<>(feedbackMap, HttpStatus.OK);
+            return new ResponseEntity<>(requestService.getRequest(id), HttpStatus.OK);
         }else{
             feedbackMap.put("message", "Error occurred adding request");
             return new ResponseEntity<>(feedbackMap, HttpStatus.BAD_REQUEST);

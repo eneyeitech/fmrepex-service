@@ -1,5 +1,6 @@
 package com.example.fmrepexservice.command;
 
+import com.example.fmrepexservice.announcementmanagement.business.Announcement;
 import com.example.fmrepexservice.authentication.Login;
 import com.example.fmrepexservice.authentication.Registration;
 import com.example.fmrepexservice.authentication.UserManagement;
@@ -27,6 +28,9 @@ public class EmailNotifier extends CommandObserver{
             } else if(command instanceof BuildingCommand){
                 BuildingCommand buildingCommand = (BuildingCommand) command;
                 buildingMessage(buildingCommand);
+            }else if(command instanceof AnnouncementCommand){
+                AnnouncementCommand announcementCommand = (AnnouncementCommand) command;
+                announcementMessage(announcementCommand);
             }
         }
     }
@@ -98,6 +102,16 @@ public class EmailNotifier extends CommandObserver{
                     command.loggedInUser.getFullName(),
                     command.loggedInUser.getEmail()
             );
+        }
+    }
+
+    public void announcementMessage(AnnouncementCommand command){
+        Announcement announcement = command.announcement;
+        if(command.announcementCreated){
+            logStore.addToLog(new Log("Announcement Created"));
+        }
+        if(command.announcementEdited){
+            logStore.addToLog(new Log("Announcement Edited"));
         }
     }
 

@@ -54,7 +54,10 @@ public class APIManagerService {
         newUser.setPassword(password);
 
         newUser.setPassword(passwordEncoderConfig.getEncoder().encode(newUser.getPassword()));
-        newUser.setLocked(true);
+        //newUser.setLocked(true);
+        newUser.setVerified(true);
+        newUser.setLocked(false);
+        newUser.setApproved(true);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User loggedInUser = null;
@@ -80,7 +83,10 @@ public class APIManagerService {
         newUser.setPassword(password);
 
         newUser.setPassword(passwordEncoderConfig.getEncoder().encode(newUser.getPassword()));
-        newUser.setLocked(true);
+        //newUser.setLocked(true);
+        newUser.setVerified(true);
+        newUser.setLocked(false);
+        newUser.setApproved(true);
 
         /**Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User loggedInUser = null;

@@ -54,7 +54,10 @@ public class APIAuthenticationService {
         newUser.setPassword(password);
 
         newUser.setPassword(passwordEncoderConfig.getEncoder().encode(newUser.getPassword()));
-        newUser.setLocked(true);
+        //newUser.setLocked(true);
+        newUser.setVerified(true);
+        newUser.setLocked(false);
+        newUser.setApproved(true);
 
         UserManagement registerManager = new Registration(newUser, new UserService());
         new SecurityMonitor(registerManager);
